@@ -1,0 +1,60 @@
+import React, { createContext, useContext } from 'react';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+
+
+const lightColors = {
+  background: '#f9f9f9',
+  text: '#333333',
+  card: '#ffffff',
+};
+
+const darkColors = {
+  background: '#121212',
+  text: '#ffffff',
+  card: '#1e1e1e',
+};
+
+
+const ThemeContext = createContext(lightColors);
+
+function ThemedCard() {
+  const colors = useContext(ThemeContext);
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card }]}>
+      <Text style={{ color: colors.text, fontSize: 18 }}>
+        Cor de acordo com o sistema. 
+      </Text>
+    </View>
+  );
+}
+
+
+export default function Ex07() {
+  const scheme = useColorScheme(); 
+  const currentTheme = scheme === 'dark' ? darkColors : lightColors;
+
+  return (
+    <ThemeContext.Provider value={currentTheme}>
+      <View style={[styles.container, { backgroundColor: currentTheme.background }]}>
+        <ThemedCard />
+      </View>
+    </ThemeContext.Provider>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    padding: 40,
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+  },
+});
