@@ -1,0 +1,85 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Button, Animated, Easing } from 'react-native';
+
+
+const ProgressBar = ({ value }) => {
+
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+  
+    Animated.timing(animatedValue, {
+      toValue: value,
+      duration: 600, 
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [value]);
+
+ 
+  const widthInterpolated = animatedValue.interpolate({
+    inputRange: [0, 100],
+    outputRange: ['0%', '100%'],
+  });
+
+  
+ 
+  const colorInterpolated = animatedValue.interpolate({
+    inputRange: [0, 50, 100],
+    outputRange: ['green', 'yellow', 'red'],
+  });
+
+  return (
+    <View style={styles.track}>
+      <Animated.View
+        style={[
+          styles.fill,
+          {
+             width: widthInterpolated,
+             backgroundColor: colorInterpolated,
+          },
+        ]}
+      />
+    </View>
+  );
+};
+
+
+export default function App() {
+  const [progress, setProgress] = useState(0);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Progresso: {progress}%</Text>
+      
+      <ProgressBar value={progress} />
+
+      <View style={styles.buttonContainer}>
+        <Button title="0%" onPress={() => setProgress(0)} />
+        <Button title="50%" onPress={() => setProgress(50)} />
+        <Button title="100%" onPress={() => setProgress(100)} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  track: {
+    height: 20,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  fill: {
+    height: '100%',
+    borderRadius: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 40,
+  }
+});
